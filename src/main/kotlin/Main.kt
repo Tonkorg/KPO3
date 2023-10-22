@@ -3,7 +3,12 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.*
+import java.io.IOException
 
+
+val binaryname = "people.dat"
+val workFile = "employee.txt"
+val binary_file_for_array = "binary_file.bin"
 
 fun main() {
     choice()
@@ -33,7 +38,7 @@ fun inputEmployee() {
 }
 
 fun save_to_file() {
-    val file = File("employee.txt")
+    val file = File(workFile)
     for (employeee in listOfEmp) {
         var text = "${employeee.name}".format("30") + " " + "${employeee.age}".format(7) + " " + "${employeee.position }\n"
         val fileWriter = FileWriter(file, true)
@@ -50,7 +55,7 @@ fun save_to_file() {
 
 fun read_and_display() {
     try {
-        val path = Paths.get("employee.txt")
+        val path = Paths.get(workFile)
         println("{'Ф.И.О.'} | {'Возраст'} | {'Должность'}")
         println("-".repeat(50))
         Files.lines(path, Charsets.UTF_8).forEach { println("$it\n") }
@@ -81,7 +86,7 @@ fun choice() {
                 3 -> read_and_display()
                 4 -> binary_write()
                 5 -> read_binary()
-                6 -> binary_write_test()
+                6 -> println("Еще в разработке :)")
                 7 -> println("Еще в разработке :)")
                 8 -> {
                     print("Выход")
@@ -97,9 +102,9 @@ fun choice() {
 }
 
 fun binary_write() {
-    val fileName = "people.dat"
+
     try {
-        val fileOutputStream = FileOutputStream(fileName)
+        val fileOutputStream = FileOutputStream(binaryname)
         val objectOutputStream = ObjectOutputStream(fileOutputStream)
 
         // Сериализуем список экземпляров класса и записываем его в файл
@@ -108,19 +113,111 @@ fun binary_write() {
         objectOutputStream.close()
         fileOutputStream.close()
 
-        println("Данные успешно сохранены в файл $fileName")
+        println("Данные успешно сохранены в файл $binaryname")
     } catch (e: Exception) {
         println("Произошла ошибка при сохранении данных: ${e.message}")
     }
 }
 
-fun read_binary() {
-    val fileName = "people.dat" // Имя вашего двоичного файла
+//fun choice_file(ch: Int) {
+//    if (ch == 2) {
+//        while (true) {
+//            println("Выбирите файл для подкачки:")
+//            println("1) binary_file.bin \n2)people.dat")
+//            when (readLine()?.toInt()) {
+//                1 -> {read_binary(); break}
+//                2 -> {readFromBinaryFile(binary_file_for_array);break}
+//                else -> println("Выведите один из представленных вариантов")
+//            }
+//        }
+//    }
+//    if(ch ==1)
+//    {
+//        while (true) {
+//            println("Выбирите файл для записи:")
+//            println("1) binary_file.bin \n2)people.dat")
+//            when (readLine()?.toInt()) {
+//                1 -> {binary_array();break}
+//                2 -> {binary_write(); break}
+//                else -> println("Выведите один из представленных вариантов")
+//            }
+//        }
+//    }
+//    }
+//fun read_binary() {
+//    val loadedPeople = readFromBinaryFile(binaryname)
+//
+//    if (loadedPeople.isNotEmpty()) {
+//        println("Данные успешно загружены из файла $binaryname:")
+//        for (person in loadedPeople) {
+//            println("Имя: ${person.name}, Возраст: ${person.age}, Должность: ${person.position}")
+//        }
+//    } else {
+//        println("Ошибка при загрузке данных из бинарного файла.")
+//    }
+//}
 
+
+/*
+fun binary_array() {
+    try {
+        val fos = FileOutputStream(binary_file_for_array)
+
+        for (emp in listOfEmp) {
+            val nameBytes = emp.name.toByteArray(Charsets.UTF_8)
+            val ageBytes = emp.age.toString().toByteArray(Charsets.UTF_8)
+            val positionBytes = emp.position.toByteArray(Charsets.UTF_8)
+            val data = nameBytes + ageBytes + positionBytes
+            fos.write(data)
+        }
+
+        fos.close()
+
+        println("Данные успешно записаны в бинарный файл: $binary_file_for_array")
+    } catch (e: IOException) {
+        e.printStackTrace()
+    }
+}
+fun stringToBinary(input: String): ByteArray {
+    val binaryList = mutableListOf<Byte>()
+
+    for (char in input) {
+        val binaryValue = char.toInt().toString(2)
+        // Дополните нулями, если необходимо
+        val paddedBinaryValue = binaryValue.padStart(8, '0')
+        binaryList.add(paddedBinaryValue.toByte(2))
+    }
+
+    return binaryList.toByteArray()
+}
+
+fun readFromBinaryFile(binaryFileName: String): List<Emp> {
+    try {
+        val fileInputStream = FileInputStream(binaryFileName)
+        val objectInputStream = ObjectInputStream(fileInputStream)
+
+        // Десериализуем список экземпляров класса из файла
+        val loadedPeople = objectInputStream.readObject() as List<Emp>
+
+        objectInputStream.close()
+        fileInputStream.close()
+
+        return loadedPeople
+    } catch (e: IOException) {
+        println("Произошла ошибка при чтении данных из бинарного файла: ${e.message}")
+    } catch (e: ClassNotFoundException) {
+        println("Произошла ошибка при чтении данных из бинарного файла: ${e.message}")
+    }
+
+    return emptyList()
+}
+
+*/
+fun read_binary() {
     try {
         println("{'Ф.И.О.'} | {'Возраст'} | {'Должность'}")
         println("-".repeat(50))
-        val fileInputStream = FileInputStream(fileName)
+        val fileInputStream = FileInputStream(binaryname)
         val objectInputStream = ObjectInputStream(fileInputStream)
 
         // Десериализуем список экземпляров класса из файла
@@ -134,28 +231,8 @@ fun read_binary() {
             println("Имя: ${person.name}, Возраст: ${person.age}, Должность: ${person.position}")
 
         }
-        println("Данные успешно загружены из файла $fileName:")
+        println("Данные успешно загружены из файла $binaryname:")
     } catch (e: Exception) {
         println("Произошла ошибка при загрузке данных: ${e.message}")
     }
-}
-
-fun binary_write_test() {
-    val fileName = "people.dat"
-    try {
-        val fileOutputStream = FileOutputStream(fileName, true) // Открываем файл для дозаписи
-        val objectOutputStream = ObjectOutputStream(fileOutputStream)
-
-        // Сериализуем экземпляр класса и записываем его в файл
-        val person = Emp("Имя", 30, "Должность") // Замените на свои данные
-        objectOutputStream.writeObject(person)
-
-        objectOutputStream.close()
-        fileOutputStream.close()
-
-        println("Данные успешно добавлены в конец файла $fileName")
-    } catch (e: Exception) {
-        println("Произошла ошибка при сохранении данных: ${e.message}")
-    }
-
 }
